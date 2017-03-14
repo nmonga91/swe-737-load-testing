@@ -1,2 +1,3 @@
 /locust.io/venv/*
-/locust.io/config_secrets.json
+/locust.io/config_secret.json
+/locust.io/__pycache__/*
