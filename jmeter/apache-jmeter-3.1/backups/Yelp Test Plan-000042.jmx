@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="3.1" jmeter="3.1 r1770033">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Yelp Test Plan" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <HTMLAssertion guiclass="HTMLAssertionGui" testclass="HTMLAssertion" testname="Search" enabled="true">
+        <longProp name="html_assertion_error_threshold">0</longProp>
+        <longProp name="html_assertion_warning_threshold">0</longProp>
+        <stringProp name="html_assertion_doctype">omit</stringProp>
+        <boolProp name="html_assertion_errorsonly">false</boolProp>
+        <longProp name="html_assertion_format">0</longProp>
+        <stringProp name="html_assertion_filename"></stringProp>
+      </HTMLAssertion>
+      <hashTree/>
+      <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+        <collectionProp name="HeaderManager.headers">
+          <elementProp name="" elementType="Header">
+            <stringProp name="Header.name">Content-Type</stringProp>
+            <stringProp name="Header.value">application/json</stringProp>
+          </elementProp>
+        </collectionProp>
+      </HeaderManager>
+      <hashTree/>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Yelp Search API Test" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">10</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">10</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">10</stringProp>
+        <longProp name="ThreadGroup.start_time">1489877918000</longProp>
+        <longProp name="ThreadGroup.end_time">1489877918000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="consumerKey" elementType="Argument">
+              <stringProp name="Argument.name">consumerKey</stringProp>
+              <stringProp name="Argument.value">dkrtl896oFgyD5fXK9V8kw</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="consumerSecret" elementType="Argument">
+              <stringProp name="Argument.name">consumerSecret</stringProp>
+              <stringProp name="Argument.value">EMHXWp37XDlrvhk_eLz6fDRfmXk</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="token" elementType="Argument">
+              <stringProp name="Argument.name">token</stringProp>
+              <stringProp name="Argument.value">-vGc_xvgVGcek-FalDBin-MRTc3ZmWIz</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="tokenSecret" elementType="Argument">
+              <stringProp name="Argument.name">tokenSecret</stringProp>
+              <stringProp name="Argument.value">90xMKXcqmLeJjOohGgv5SKUH0pQ</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="requestUrl" elementType="Argument">
+              <stringProp name="Argument.name">requestUrl</stringProp>
+              <stringProp name="Argument.value">https://api.yelp.com/v2/search/</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+          </collectionProp>
+        </Arguments>
+        <hashTree/>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="San Francisco" enabled="true">
+          <stringProp name="cacheKey">eed4496e-edc6-4007-9006-c4d31d058ba5</stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="script">import oauth.signpost.OAuth;
+import oauth.signpost.OAuthConsumer;
+import oauth.signpost.OAuthProvider;
+import oauth.signpost.basic.DefaultOAuthConsumer;
+import oauth.signpost.basic.DefaultOAuthProvider;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+
+
+OAuthConsumer consumer = new DefaultOAuthConsumer(vars.get(&quot;consumerKey&quot;),
+     vars.get(&quot;consumerSecret&quot;));
+consumer.setTokenWithSecret(vars.get(&quot;token&quot;), vars.get(&quot;tokenSecret&quot;));
+String requestUrl = vars.get(&quot;requestUrl&quot;);
+String formattedUrl = requestUrl + &quot;?location=&quot; + URLEncoder.encode(&quot;San Francisco, CA&quot;, &quot;UTF-8&quot;);
+URL url = new URL(formattedUrl);
+HttpURLConnection request = (HttpURLConnection) url.openConnection();
+consumer.sign(request);
+request.connect();
+BufferedReader reader = new BufferedReader(new InputStreamReader(
+request.getInputStream()));
+String inputLine;
+log.info(&quot;========== Search Endpoint: San Francisco ==========&quot;);
+while ((inputLine = reader.readLine()) != null)
+   log.info(inputLine);
+reader.close();
+request.disconnect();</stringProp>
+          <stringProp name="scriptLanguage">groovy</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="DC" enabled="true">
+          <stringProp name="cacheKey">eed4496e-edc6-4007-9006-c4d31d058ba5</stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="script">import oauth.signpost.OAuth;
+import oauth.signpost.OAuthConsumer;
+import oauth.signpost.OAuthProvider;
+import oauth.signpost.basic.DefaultOAuthConsumer;
+import oauth.signpost.basic.DefaultOAuthProvider;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+
+
+OAuthConsumer consumer = new DefaultOAuthConsumer(vars.get(&quot;consumerKey&quot;),
+     vars.get(&quot;consumerSecret&quot;));
+consumer.setTokenWithSecret(vars.get(&quot;token&quot;), vars.get(&quot;tokenSecret&quot;));
+String requestUrl = vars.get(&quot;requestUrl&quot;);
+String formattedUrl = requestUrl + &quot;?location=&quot; + URLEncoder.encode(&quot;Washington, D.C&quot;, &quot;UTF-8&quot;)  + &quot;&amp;sort=2&amp;category_filter=mexican&quot;;
+URL url = new URL(formattedUrl);
+HttpURLConnection request = (HttpURLConnection) url.openConnection();
+consumer.sign(request);
+request.connect();
+BufferedReader reader = new BufferedReader(new InputStreamReader(
+request.getInputStream()));
+String inputLine;
+log.info(&quot;========== Search Endpoint: DC ==========&quot;);
+while ((inputLine = reader.readLine()) != null)
+   log.info(inputLine);
+reader.close();
+request.disconnect();</stringProp>
+          <stringProp name="scriptLanguage">groovy</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Yelp Business API Test" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">10</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">10</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">10</stringProp>
+        <longProp name="ThreadGroup.start_time">1489877918000</longProp>
+        <longProp name="ThreadGroup.end_time">1489877918000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="consumerKey" elementType="Argument">
+              <stringProp name="Argument.name">consumerKey</stringProp>
+              <stringProp name="Argument.value">dkrtl896oFgyD5fXK9V8kw</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="consumerSecret" elementType="Argument">
+              <stringProp name="Argument.name">consumerSecret</stringProp>
+              <stringProp name="Argument.value">EMHXWp37XDlrvhk_eLz6fDRfmXk</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="token" elementType="Argument">
+              <stringProp name="Argument.name">token</stringProp>
+              <stringProp name="Argument.value">-vGc_xvgVGcek-FalDBin-MRTc3ZmWIz</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="tokenSecret" elementType="Argument">
+              <stringProp name="Argument.name">tokenSecret</stringProp>
+              <stringProp name="Argument.value">90xMKXcqmLeJjOohGgv5SKUH0pQ</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="requestUrl" elementType="Argument">
+              <stringProp name="Argument.name">requestUrl</stringProp>
+              <stringProp name="Argument.value">https://api.yelp.com/v2/business/</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+          </collectionProp>
+        </Arguments>
+        <hashTree/>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="San Francisco" enabled="true">
+          <stringProp name="cacheKey">eed4496e-edc6-4007-9006-c4d31d058ba5</stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="script">import oauth.signpost.OAuth;
+import oauth.signpost.OAuthConsumer;
+import oauth.signpost.OAuthProvider;
+import oauth.signpost.basic.DefaultOAuthConsumer;
+import oauth.signpost.basic.DefaultOAuthProvider;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+
+
+OAuthConsumer consumer = new DefaultOAuthConsumer(vars.get(&quot;consumerKey&quot;),
+     vars.get(&quot;consumerSecret&quot;));
+consumer.setTokenWithSecret(vars.get(&quot;token&quot;), vars.get(&quot;tokenSecret&quot;));
+String requestUrl = vars.get(&quot;requestUrl&quot;);
+String formattedUrl = requestUrl + &quot;coffeeshop-san-francisco&quot;;
+URL url = new URL(formattedUrl);
+HttpURLConnection request = (HttpURLConnection) url.openConnection();
+consumer.sign(request);
+request.connect();
+BufferedReader reader = new BufferedReader(new InputStreamReader(
+request.getInputStream()));
+String inputLine;
+log.info(&quot;========== Business Endpoint: San Francisco ==========&quot;);
+while ((inputLine = reader.readLine()) != null)
+   log.info(inputLine);
+reader.close();
+request.disconnect();</stringProp>
+          <stringProp name="scriptLanguage">groovy</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="DC" enabled="true">
+          <stringProp name="cacheKey">eed4496e-edc6-4007-9006-c4d31d058ba5</stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="script">import oauth.signpost.OAuth;
+import oauth.signpost.OAuthConsumer;
+import oauth.signpost.OAuthProvider;
+import oauth.signpost.basic.DefaultOAuthConsumer;
+import oauth.signpost.basic.DefaultOAuthProvider;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+
+
+OAuthConsumer consumer = new DefaultOAuthConsumer(vars.get(&quot;consumerKey&quot;),
+     vars.get(&quot;consumerSecret&quot;));
+consumer.setTokenWithSecret(vars.get(&quot;token&quot;), vars.get(&quot;tokenSecret&quot;));
+String requestUrl = vars.get(&quot;requestUrl&quot;);
+String formattedUrl = requestUrl + &quot;komi-washington?lang_filter=true&amp;actionlinks=true&quot;;
+URL url = new URL(formattedUrl);
+HttpURLConnection request = (HttpURLConnection) url.openConnection();
+consumer.sign(request);
+request.connect();
+BufferedReader reader = new BufferedReader(new InputStreamReader(
+request.getInputStream()));
+String inputLine;
+log.info(&quot;========== Business Endpoint: DC ==========&quot;);
+while ((inputLine = reader.readLine()) != null)
+   log.info(inputLine);
+reader.close();
+request.disconnect();</stringProp>
+          <stringProp name="scriptLanguage">groovy</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Yelp Phone API Test" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">10</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">10</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">10</stringProp>
+        <longProp name="ThreadGroup.start_time">1489877918000</longProp>
+        <longProp name="ThreadGroup.end_time">1489877918000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="consumerKey" elementType="Argument">
+              <stringProp name="Argument.name">consumerKey</stringProp>
+              <stringProp name="Argument.value">dkrtl896oFgyD5fXK9V8kw</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="consumerSecret" elementType="Argument">
+              <stringProp name="Argument.name">consumerSecret</stringProp>
+              <stringProp name="Argument.value">EMHXWp37XDlrvhk_eLz6fDRfmXk</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="token" elementType="Argument">
+              <stringProp name="Argument.name">token</stringProp>
+              <stringProp name="Argument.value">-vGc_xvgVGcek-FalDBin-MRTc3ZmWIz</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="tokenSecret" elementType="Argument">
+              <stringProp name="Argument.name">tokenSecret</stringProp>
+              <stringProp name="Argument.value">90xMKXcqmLeJjOohGgv5SKUH0pQ</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="requestUrl" elementType="Argument">
+              <stringProp name="Argument.name">requestUrl</stringProp>
+              <stringProp name="Argument.value">https://api.yelp.com/v2/phone_search/</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+          </collectionProp>
+        </Arguments>
+        <hashTree/>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="San Francisco" enabled="true">
+          <stringProp name="cacheKey">eed4496e-edc6-4007-9006-c4d31d058ba5</stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="script">import oauth.signpost.OAuth;
+import oauth.signpost.OAuthConsumer;
+import oauth.signpost.OAuthProvider;
+import oauth.signpost.basic.DefaultOAuthConsumer;
+import oauth.signpost.basic.DefaultOAuthProvider;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+
+
+OAuthConsumer consumer = new DefaultOAuthConsumer(vars.get(&quot;consumerKey&quot;),
+     vars.get(&quot;consumerSecret&quot;));
+consumer.setTokenWithSecret(vars.get(&quot;token&quot;), vars.get(&quot;tokenSecret&quot;));
+String requestUrl = vars.get(&quot;requestUrl&quot;);
+String formattedUrl = requestUrl + &quot;?phone=4159284300&quot;;
+URL url = new URL(formattedUrl);
+HttpURLConnection request = (HttpURLConnection) url.openConnection();
+consumer.sign(request);
+request.connect();
+BufferedReader reader = new BufferedReader(new InputStreamReader(
+request.getInputStream()));
+String inputLine;
+log.info(&quot;========== Phone Endpoint: San Francisco ==========&quot;);
+while ((inputLine = reader.readLine()) != null)
+   log.info(inputLine);
+reader.close();
+request.disconnect();</stringProp>
+          <stringProp name="scriptLanguage">groovy</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

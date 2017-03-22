@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="2.6" jmeter="2.11 r1554548">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">true</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="consumerKey" elementType="Argument">
+            <stringProp name="Argument.name">consumerKey</stringProp>
+            <stringProp name="Argument.value">key</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="consumerSecret" elementType="Argument">
+            <stringProp name="Argument.name">consumerSecret</stringProp>
+            <stringProp name="Argument.value">secret</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="requestUrl" elementType="Argument">
+            <stringProp name="Argument.name">requestUrl</stringProp>
+            <stringProp name="Argument.value">http://oauthbin.com/v1/request-token</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="accessUrl" elementType="Argument">
+            <stringProp name="Argument.name">accessUrl</stringProp>
+            <stringProp name="Argument.value">http://oauthbin.com/v1/access-token</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="protectedUrl" elementType="Argument">
+            <stringProp name="Argument.name">protectedUrl</stringProp>
+            <stringProp name="Argument.value">http://oauthbin.com/v1/echo</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </Arguments>
+      <hashTree/>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="OAuth1" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <longProp name="ThreadGroup.start_time">1415104259000</longProp>
+        <longProp name="ThreadGroup.end_time">1415104259000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="OAuth1 Sampler" enabled="true">
+          <stringProp name="cacheKey"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="script">import oauth.signpost.OAuth;
+import oauth.signpost.OAuthConsumer;
+import oauth.signpost.OAuthProvider;
+import oauth.signpost.basic.DefaultOAuthConsumer;
+import oauth.signpost.basic.DefaultOAuthProvider;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+
+OAuthConsumer consumer = new DefaultOAuthConsumer(vars.get(&quot;consumerKey&quot;),
+      vars.get(&quot;consumerSecret&quot;));
+URL url = new URL(vars.get(&quot;requestUrl&quot;));
+HttpURLConnection request = (HttpURLConnection) url.openConnection();
+consumer.sign(request);
+request.connect();
+BufferedReader reader = new BufferedReader(new InputStreamReader(
+	request.getInputStream()));
+String inputLine;
+log.info(&quot;========== OAuth token and token secret ==========&quot;);
+while ((inputLine = reader.readLine()) != null)
+    log.info(inputLine);
+reader.close();
+request.disconnect();
+
+OAuthProvider provider = new DefaultOAuthProvider(
+	vars.get(&quot;requestUrl&quot;), vars.get(&quot;accessUrl&quot;),
+	vars.get(&quot;protectedUrl&quot;));
+
+log.info(&quot;========== OAuth Request Token ==========&quot;);
+
+log.info(provider.retrieveRequestToken(consumer, OAuth.OUT_OF_BAND));
+
+provider.retrieveAccessToken(consumer, OAuth.OUT_OF_BAND);
+
+url = new URL(vars.get(&quot;protectedUrl&quot;) + &quot;?jmeter=great&quot;);
+request = (HttpURLConnection) url.openConnection();
+consumer.sign(request);
+request.connect();
+reader = new BufferedReader(new InputStreamReader(
+	request.getInputStream()));
+log.info(&quot;========== Authenticated Request Response ==========&quot;);
+
+while ((inputLine = reader.readLine()) != null)
+    log.info(inputLine);    
+reader.close();
+request.disconnect();
+</stringProp>
+          <stringProp name="scriptLanguage">groovy</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+      </hashTree>
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>false</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
