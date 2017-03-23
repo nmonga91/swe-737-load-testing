@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE tsung SYSTEM "/usr/local/Cellar/tsung/1.6.0/share/tsung/tsung-1.0.dtd">
+<tsung loglevel="debug" dumptraffic="true" version="1.0">
+
+  <clients>
+    <client host="localhost" weight="1" maxusers="1" use_controller_vm="true"/>
+  </clients>
+
+  <servers>
+    <server host="api.yelp.com" port="443" type="ssl" />
+  </servers>
+
+	<load>
+   <arrivalphase phase="1" duration="2" unit="second">
+    <users interarrival="1" unit="second"></users>
+   </arrivalphase>
+  </load>
+
+  <sessions>
+    <session name="san_fran" probability="50" type="ts_http">
+      <request>
+        <match do="dump" when="match" />
+        <http url="/v2/search/?location=San%20Francisco%2C%20CA" method="GET" version="1.1">
+         <oauth consumer_key="" consumer_secret="" access_token="" access_token_secret="" method="HMAC-SHA1"/>
+        </http>
+      </request>
+
+      <request>
+        <match do="dump" when="match" />
+        <http url="/v2/business/coffeeshop-san-francisco" method="GET" version="1.1">
+         <oauth consumer_key="" consumer_secret="" access_token="" access_token_secret="" method="HMAC-SHA1"/>
+        </http>
+      </request>
+
+      <request>
+        <match do="dump" when="match" />
+        <http url="/v2/phone_search/?phone=4159284300" method="GET" version="1.1">
+         <oauth consumer_key="" consumer_secret="" access_token="" access_token_secret="" method="HMAC-SHA1"/>
+        </http>
+      </request>
+    </session>
+
+    <session name="dc" probability="50" type="ts_http">
+      <request>
+        <match do="dump" when="match" />
+        <http url="/v2/search/?location=Washington%2C%20D%2EC%26sort%3D2%26category_filter%3Dmexican" method="GET" version="1.1">
+         <oauth consumer_key="" consumer_secret="" access_token="" access_token_secret="" method="HMAC-SHA1"/>
+        </http>
+      </request>
+
+      <request>
+        <match do="dump" when="match" />
+        <http url="/v2/business/komi-washington?lang_filter=true%26actionlinks%3Dtrue" method="GET" version="1.1">
+         <oauth consumer_key="" consumer_secret="" access_token="" access_token_secret="" method="HMAC-SHA1"/>
+        </http>
+      </request>
+
+      <request>
+        <match do="dump" when="match" />
+        <http url="/v2/phone_search/?phone=(703)%20993-1000" method="GET" version="1.1">
+         <oauth consumer_key="" consumer_secret="" access_token="" access_token_secret="" method="HMAC-SHA1"/>
+        </http>
+      </request>
+    </session>
+  </sessions>
+
+</tsung>

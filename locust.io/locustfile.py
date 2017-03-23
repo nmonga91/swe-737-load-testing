@@ -8,13 +8,13 @@ from requests_oauthlib import OAuth1
 
 class YelpBehavior(TaskSet):
 	def on_start(self):
-		creds = setup_creds()
 		self.auth = OAuth1(creds['consumer_key'], creds['consumer_secret'], creds['token'], creds['token_secret'])
 
 	@task
 	def search_san_francisco(self):
 		""" General search for San Francisco, CA """
 		self.client.request(method='GET', url='/search/?location=San Francisco, CA', auth=self.auth)
+		
 
 	@task
 	def business_san_francisco(self):
@@ -53,3 +53,6 @@ def setup_creds():
 	with io.open('config_secret.json') as cred:
 		creds = json.load(cred)
 		return creds
+
+
+creds = setup_creds()
