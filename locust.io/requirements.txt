@@ -1,3 +1,1 @@
--e git://github.com/locustio/locust.git@master#egg=locustio
-yelp
 requests-oauthlib

@@ -1,0 +1,12 @@
+#!/Users/nipunmonga/Development/swe-737-load-testing/the_grinder/venv/bin/python3.6
+# EASY-INSTALL-ENTRY-SCRIPT: 'locustio','console_scripts','locust'
+__requires__ = 'locustio'
+import re
+import sys
+from pkg_resources import load_entry_point
+
+if __name__ == '__main__':
+    sys.argv[0] = re.sub(r'(-script\.pyw?|\.exe)?$', '', sys.argv[0])
+    sys.exit(
+        load_entry_point('locustio', 'console_scripts', 'locust')()
+    )
